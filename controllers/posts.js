@@ -89,3 +89,28 @@ export const likePost = async (req, res) => {
     res.json({ message: error });
   }
 };
+
+export const dislikePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    console.log("in try dislikePost node js");
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("id wrong hai in dislikePost node");
+      return res.status(404).send("No post with that id for dislikePost");
+    }
+    const post = await PostMessage.findById(id);
+    const updatedPost = await PostMessage.findByIdAndUpdate(
+      id,
+      { dislikeCount: post.dislikeCount - 1 },
+      { new: true }
+    );
+    // console.log("Like updatedPost is below");
+    // console.log(updatedPost);
+
+    res.json(updatedPost);
+  } catch (error) {
+    console.log("in catch dislikePost node js");
+    res.json({ message: error });
+  }
+};
